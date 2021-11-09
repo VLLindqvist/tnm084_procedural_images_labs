@@ -25,45 +25,42 @@
 #define kTextureSize 512
 GLubyte ptex[kTextureSize][kTextureSize][3];
 /* This is the frequency */
-const float ringDensity = 30.0;
+// const float ringDensity = 30.0;
 /* ===================== */
+const double brickWidth = 40.0;
+const double brickHeight = 17.0;
+const double mortarThickness = 4.0;
 
-// Example: Radial pattern.
+// Brick pattern
 void maketexture() {
-  int x, y;
-  float fx, fy, fxo, fyo;
-  char val;
+  for (int x = 0; x < kTextureSize; x++) {
+    for (int y = 0; y < kTextureSize; y++) {
+      double fracXBrick, intPart, fracYBrick;
+      fracXBrick = modf((double)x / brickWidth, &intPart);
+      fracYBrick = modf((double)y / brickHeight, &intPart);
 
-  for (x = 0; x < kTextureSize; x++)
-    for (y = 0; y < kTextureSize; y++) {
-      ptex[x][y][0] = x * 2;
-      ptex[x][y][1] = y * 2;
-      ptex[x][y][2] = 128;
+      unsigned evenRow = (int)(y / brickHeight) % 2 != 0;
+      unsigned short brickInX = 0;
 
-      fx = (float)(x - kTextureSize / 2.) / kTextureSize * 2.;
-      fy = (float)(y - kTextureSize / 2.) / kTextureSize * 2.;
+      if (evenRow) {
+        brickInX = fracXBrick < (brickWidth / (brickWidth + mortarThickness));
+      } else if (fracXBrick < (brickWidth / 2) / (brickWidth + mortarThickness)) {
+        brickInX = 1;
+      } else if (fracXBrick > ((brickWidth / 2) + mortarThickness) / (brickWidth + mortarThickness)) {
+        brickInX = 1;
+      }
 
-      /* This translates the radial pattern */
-      fx -= .01;
-      fy += .1;
-      /* ================================== */
-
-      fxo = sqrt(fx * fx + fy * fy);
-      fyo = sqrt(fx * fx + fy * fy);
-      fxo = cos(fxo * ringDensity);
-      fyo = sin(fyo * ringDensity);
-      if (fxo > 1.0)
-        fxo = 1;
-      if (fxo < -1.0)
-        fxo = -1.0;
-      if (fyo > 1.0)
-        fyo = 1.0;
-      if (fyo < -1.0)
-        fyo = -1.0;
-      ptex[x][y][0] = .0 * (fxo * 27 + 127);
-      ptex[x][y][1] = fyo * 200 + 17;
-      ptex[x][y][2] = fxo * 23 + 100;
+      if (brickInX && fracYBrick < (brickHeight / (brickHeight + mortarThickness))) {
+        ptex[y][x][0] = 255.0;
+        ptex[y][x][1] = 100.0;
+        ptex[y][x][2] = 50.0;
+      } else {
+        ptex[y][x][0] = 80.0;
+        ptex[y][x][1] = 80.0;
+        ptex[y][x][2] = 80.0;
+      }
     }
+  }
 }
 
 // Globals
@@ -120,8 +117,9 @@ void init(void) {
   glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
 
   // Constants common to CPU and GPU
-  glUniform1i(glGetUniformLocation(program, "displayGPUversion"), 0); // shader generation off
-  glUniform1f(glGetUniformLocation(program, "ringDensity"), ringDensity);
+  glUniform1i(glGetUniformLocation(program, "displayGPUversion"),
+              0); // shader generation off
+  glUniform1f(glGetUniformLocation(program, "ringDensity"), 1.0);
 
   maketexture();
 
@@ -141,7 +139,8 @@ void init(void) {
 // Switch on any key
 void key(unsigned char key, int x, int y) {
   displayGPUversion = !displayGPUversion;
-  glUniform1i(glGetUniformLocation(program, "displayGPUversion"), displayGPUversion); // shader generation off
+  glUniform1i(glGetUniformLocation(program, "displayGPUversion"),
+              displayGPUversion); // shader generation off
   printf("Changed flag to %d\n", displayGPUversion);
   glutPostRedisplay();
 }

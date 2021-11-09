@@ -60,9 +60,12 @@ void maketexture() {
         fyo = 1.0;
       if (fyo < -1.0)
         fyo = -1.0;
-      ptex[x][y][0] = .0 * (fxo * 27 + 127);
+
+      /* This is the color */
+      ptex[x][y][0] = .1 * (fxo * 27 + 127);
       ptex[x][y][1] = fyo * 200 + 17;
       ptex[x][y][2] = fxo * 23 + 100;
+      /* ================= */
     }
 }
 
@@ -120,7 +123,8 @@ void init(void) {
   glUniform1i(glGetUniformLocation(program, "tex"), 0); // Texture unit 0
 
   // Constants common to CPU and GPU
-  glUniform1i(glGetUniformLocation(program, "displayGPUversion"), 0); // shader generation off
+  glUniform1i(glGetUniformLocation(program, "displayGPUversion"),
+              0); // shader generation off
   glUniform1f(glGetUniformLocation(program, "ringDensity"), ringDensity);
 
   maketexture();
@@ -141,7 +145,8 @@ void init(void) {
 // Switch on any key
 void key(unsigned char key, int x, int y) {
   displayGPUversion = !displayGPUversion;
-  glUniform1i(glGetUniformLocation(program, "displayGPUversion"), displayGPUversion); // shader generation off
+  glUniform1i(glGetUniformLocation(program, "displayGPUversion"),
+              displayGPUversion); // shader generation off
   printf("Changed flag to %d\n", displayGPUversion);
   glutPostRedisplay();
 }
