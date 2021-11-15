@@ -15,6 +15,7 @@ uniform float brickHeight;
 uniform float mortarThickness;
 uniform int textureSize;
 uniform float noiseWeight;
+uniform int time;
 
 vec2 random2(vec2 st) {
   st = vec2(dot(st, vec2(127.1, 311.7)), dot(st, vec2(269.5, 183.3)));
@@ -64,18 +65,23 @@ float iqnoise(in vec2 x, float u, float v) {
   return va / wt;
 }
 
+float getBrickXFrac(float offset) { return fract(((texCoord.s * textureSize) + offset) / brickWidth); }
+
 void gpuBrickTexture(void) {
-  float fracXBrick = fract((texCoord.s * textureSize) / brickWidth);
   float fracYBrick = fract((texCoord.t * textureSize) / brickHeight);
 
-  bool evenRow = int(floor((texCoord.t * textureSize)) / brickHeight) % 2 != 0;
+  int rowNumber = int(floor((texCoord.t * textureSize)) / brickHeight);
+  int amountOfRows = int(floor(textureSize / brickHeight));
+  bool evenRow = rowNumber % 2 != 0;
   bool brickInX = false;
 
+  int animationMult = (rowNumber == 0 || (amountOfRows - rowNumber) == 0) ? 30 : (rowNumber > (amountOfRows / 2) ? rowNumber % amountOfRows : (amountOfRows - rowNumber) % amountOfRows);
+
   if (evenRow) {
-    brickInX = fracXBrick < (brickWidth / (brickWidth + mortarThickness));
-  } else if (fracXBrick < (brickWidth / 2) / (brickWidth + mortarThickness)) {
+    brickInX = getBrickXFrac((time / -60) * 0.1 * animationMult) < brickWidth / (brickWidth + mortarThickness);
+  } else if (getBrickXFrac((time / -60) * 0.1 * animationMult) < (brickWidth / 2) / (brickWidth + mortarThickness)) {
     brickInX = true;
-  } else if (fracXBrick > ((brickWidth / 2) + mortarThickness) / (brickWidth + mortarThickness)) {
+  } else if (getBrickXFrac((time / -60) * 0.1 * animationMult) > ((brickWidth / 2) + mortarThickness) / (brickWidth + mortarThickness)) {
     brickInX = true;
   }
 

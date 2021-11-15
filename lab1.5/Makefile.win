@@ -1,0 +1,37 @@
+# Project: Lab1
+# Makefile created by Embarcadero Dev-C++ 6.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = ../common/GL_utilities.o ../common/Windows/glew.o ../common/Windows/MicroGlut.o lab1.o
+LINKOBJ  = ../common/GL_utilities.o ../common/Windows/glew.o ../common/Windows/MicroGlut.o lab1.o
+LIBS     = -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -lstdc++ -mwindows -lopengl32
+INCS     = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
+CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
+BIN      = Lab1.exe
+CXXFLAGS = $(CXXINCS) -I../common -I../common/Windows -Inoise
+CFLAGS   = $(INCS) -I../common -I../common/Windows -Inoise
+DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\DevCpp.exe INTERNAL_DEL
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${DEL} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+../common/GL_utilities.o: ../common/GL_utilities.c
+	$(CC) -c ../common/GL_utilities.c -o ../common/GL_utilities.o $(CFLAGS)
+
+../common/Windows/glew.o: ../common/Windows/glew.c
+	$(CC) -c ../common/Windows/glew.c -o ../common/Windows/glew.o $(CFLAGS)
+
+../common/Windows/MicroGlut.o: ../common/Windows/MicroGlut.c
+	$(CC) -c ../common/Windows/MicroGlut.c -o ../common/Windows/MicroGlut.o $(CFLAGS)
+
+lab1.o: lab1.c
+	$(CC) -c lab1.c -o lab1.o $(CFLAGS)

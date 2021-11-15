@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.h": "c"
+  },
+  "code-runner.executorMapByGlob": {
+    "*.*": "cd $workspaceRoot && make clean && make && ./lab1-1"
+  }
+}

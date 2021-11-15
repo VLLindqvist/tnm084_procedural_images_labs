@@ -78,6 +78,7 @@ GLuint texid;
 int displayGPUversion = 0;
 // Reference to shader program
 GLuint program;
+GLuint timeUniformLoc;
 
 void init(void) {
   // two vertex buffer objects, used for uploading the
@@ -127,6 +128,8 @@ void init(void) {
   glUniform1i(glGetUniformLocation(program, "noiseWeight"), (float)(brickWidth * brickHeight) / (kTextureSize * kTextureSize));
   glUniform1i(glGetUniformLocation(program, "textureSize"), kTextureSize);
 
+  timeUniformLoc = glGetUniformLocation(program, "time");
+
   maketexture();
 
   // Upload texture
@@ -157,6 +160,8 @@ void display(void) {
   // clear the screen
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  glUniform1i(timeUniformLoc, glutGet(GLUT_ELAPSED_TIME));
+
   glBindVertexArray(vertexArrayObjID); // Select VAO
   glDrawArrays(GL_TRIANGLES, 0, 6);    // draw object
 
@@ -169,7 +174,8 @@ int main(int argc, char *argv[]) {
   glutInit(&argc, argv);
   glutInitContextVersion(3, 2);
   glutInitWindowSize(kTextureSize, kTextureSize);
-  glutCreateWindow("Lab 1");
+  glutCreateWindow("Lab 1.5");
+  glutRepeatingTimer(1000 / 60);
   glutDisplayFunc(display);
   glutKeyboardFunc(key);
   init();
