@@ -1,0 +1,20 @@
+{
+  "files.associations": {
+    "*.h": "c",
+    "__bit_reference": "c",
+    "algorithm": "c",
+    "bitset": "c",
+    "chrono": "c",
+    "unordered_map": "c",
+    "limits": "c",
+    "ratio": "c",
+    "memory": "cpp",
+    "utility": "cpp",
+    "iostream": "cpp"
+  },
+  "code-runner.executorMap": {
+    "c": "cd $workspaceRoot ; make clean ; make ; ./executable",
+    "cpp": "cd $workspaceRoot ; make clean ; make ; ./executable",
+    "glsl": "cd $workspaceRoot ; [ ! -f \"./executable\" ] && make ; ./executable"
+  }
+}
